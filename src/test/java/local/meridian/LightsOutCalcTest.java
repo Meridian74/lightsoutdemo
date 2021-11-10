@@ -12,7 +12,8 @@ public class LightsOutCalcTest {
             true, true, true, true, true, true, true, true, true, true, true };
 
       int gridWidth = 5;
-      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
+      Counter counter = new Counter(gridWidth);
+      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth, counter);
       long steps = game.calculateMinSteps();
       assertEquals(8, steps);
 
@@ -20,51 +21,47 @@ public class LightsOutCalcTest {
 
    @Test
    public void testWithPreparedDatas2() {
-      boolean[] testData = {
-            false, false, false, false, false,
-            false, true, false, false, false,
-            true, true, true, true, true, 
-            false, false, true, true, false, 
-            false, false, true, false, false };
+      boolean[] testData = { false, false, false, false, false, false, true, false, false, false, true, true, true,
+            true, true, false, false, true, true, false, false, false, true, false, false };
 
       int gridWidth = 5;
-      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
+      Counter counter = new Counter(gridWidth);
+      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth, counter);
       long steps = game.calculateMinSteps();
       assertEquals(9, steps);
 
    }
- 
+
    @Test
    public void testWithWrongSizeOfGrid() {
       boolean[] wrongSizeGrid = { false, true, false, true, false };
       int gridWidth = 2;
-      assertThrows(IllegalArgumentException.class, () -> new LigthsOutCalc(wrongSizeGrid, gridWidth));
+      Counter counter = new Counter(gridWidth);
+      assertThrows(IllegalArgumentException.class, () -> new LigthsOutCalc(wrongSizeGrid, gridWidth, counter));
    }
-   
+
    @Test
    public void shoudOneStepGrid() {
       boolean[] testData = { false, false, false, false, false, false, true, false, false, false, true, true, true,
             false, false, false, true, false, false, false, false, false, false, false, false };
 
       int gridWidth = 5;
-      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
+      Counter counter = new Counter(gridWidth);
+      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth, counter);
       long steps = game.calculateMinSteps();
       assertEquals(1, steps);
    }
 
    @Test
    public void shoudZeroStepGrid() {
-      boolean[] testData = {
-            false, false, false, false, false,
-            false, false, false, false, false,
-            false, false, false, false, false, 
-            false, false, false, false, false, 
-            false, false, false, false, false };
-   
+      boolean[] testData = { false, false, false, false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false, false, false };
+
       int gridWidth = 5;
-      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
+      Counter counter = new Counter(gridWidth);
+      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth, counter);
       long steps = game.calculateMinSteps();
-      assertEquals(0, steps); 
+      assertEquals(0, steps);
    }
 
 }

@@ -12,20 +12,25 @@ public class LigthsOutCalc {
    private List<int[]> steps;
    private List<int[]> bestMinSteps;
    private long minSteps;
-   private int[] counters;
 
-   // ---->>> for optional informations
-   private LocalTime startTime;
+   // for stepping variations
+   private Counter counter;
+   private int[] firstLineSteps;
+
+   // for optional informations
+   private LocalTime startTime; 
    private long calculatedVariation;
 
-   public LigthsOutCalc(boolean[] data, int width) {
+
+   public LigthsOutCalc(boolean[] data, int width, Counter counter) {
       this.savedGrid = data;
       this.gridWidth = width;
+      this.counter = counter;
       initializing();
    }
 
-   public LigthsOutCalc(int width) {
-      this(randomize(width), width);
+   public LigthsOutCalc(int width, Counter counter) {
+      this(randomize(width), width, counter);
    }
 
    private static boolean[] randomize(int width) {
@@ -38,30 +43,25 @@ public class LigthsOutCalc {
 
    // main calculator
    public long calculateMinSteps() {
-      resetCounters(gridWidth - 1);
-      int edgeMarker = 0;
-      int currentCounter = 0;
       calculatedVariation = 0;
       startTime = LocalTime.now();
       do {
-         // --->>> optional information on variations already calculated 
-         if (LocalTime.now().minusSeconds(10).isAfter(startTime)) {
-            startTime = startTime.plusSeconds(10L);
-            System.out.println("Examined variations: " + calculatedVariation);
-         }
-
+         printTemporaryCalculations();
          runChasingTheLights();
-         if (isSolved() && steps.size() < minSteps) {
+         if (isSolved() && steps.size() < minSteps)
             setNewBestShortedSteps();
-         }
          calculatedVariation++;
+
          steps.clear();
          stateOfGrid = Arrays.copyOf(savedGrid, savedGrid.length);
-         for (int i = 0; i <= edgeMarker; i++) { // first steps for trying to solve whole grid
-            toggleCells(counters[i]);
+         firstLineSteps = counter.getCounters();
+         if (firstLineSteps[0] < 0) // reach to end of calculations! jump out from the while cycle
+            break; 
+
+         for (int i = 0; i < firstLineSteps.length; i++) { // first steps for trying to solve whole grid
+            toggleCells(firstLineSteps[i]);
          }
-         edgeMarker = stepCounters(currentCounter, edgeMarker);
-      } while (edgeMarker < gridWidth);
+      } while (true);
       return minSteps;
    }
 
@@ -73,6 +73,14 @@ public class LigthsOutCalc {
       return bestMinSteps;
    }
 
+   private void printTemporaryCalculations() {
+      // --->>> optional information on variations already calculated
+      if (LocalTime.now().minusSeconds(10).isAfter(startTime)) {
+         startTime = startTime.plusSeconds(10L);
+         System.out.println("Examined variations: " + calculatedVariation);
+      } // ->>> .............................................. <<<---
+   }
+
    private void initializing() {
       if (savedGrid.length % gridWidth != 0) {
          throw new IllegalArgumentException("Incorrect grid size!");
@@ -80,7 +88,6 @@ public class LigthsOutCalc {
       this.minSteps = Long.MAX_VALUE;
       this.steps = new ArrayList<>();
       this.bestMinSteps = new ArrayList<>();
-      this.counters = new int[gridWidth];
       this.stateOfGrid = Arrays.copyOf(savedGrid, savedGrid.length);
    }
 
@@ -93,8 +100,8 @@ public class LigthsOutCalc {
    }
 
    private void setNewBestShortedSteps() {
-         minSteps = steps.size();
-         bestMinSteps = List.copyOf(steps);
+      minSteps = steps.size();
+      bestMinSteps = List.copyOf(steps);
    }
 
    private void toggleCells(int cellIndex) {
@@ -131,41 +138,6 @@ public class LigthsOutCalc {
          if (stateOfGrid[cellIndex - gridWidth])
             toggleCells(cellIndex);
       }
-   }
-
-   private void resetCounters(int edgeMarker) {
-      for (int i = 0; i <= edgeMarker; i++) {
-         counters[i] = i;
-      }
-   }
-
-   private int stepCounters(int currentCounter, int edgeMarker) {
-      boolean steppingSuccessed = false;
-      do {
-         if (currentCounter == edgeMarker) {
-            if (counters[currentCounter] < gridWidth - 1) {
-               counters[currentCounter]++;
-               steppingSuccessed = true;
-               currentCounter = 0;
-            } else {
-               resetCounters(edgeMarker);
-               edgeMarker++;
-               steppingSuccessed = true;
-               currentCounter = 0;
-            }
-         } else if (counters[currentCounter] + 1 < counters[currentCounter + 1]) {
-            counters[currentCounter]++;
-            steppingSuccessed = true;
-            currentCounter = 0;
-         } else {
-            counters[currentCounter] = currentCounter;
-            currentCounter++;
-            steppingSuccessed = false;
-         }
-
-      } while (!steppingSuccessed);
-
-      return edgeMarker;
    }
 
    @Override

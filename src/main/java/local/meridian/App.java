@@ -6,12 +6,15 @@ public class App
     {
         System.out.println("Hello in the Lights Out Game!");
         
-        int width = 5;
-        LigthsOutCalc game = new LigthsOutCalc(width);
+        int width = 7;
+        Counter counter = new Counter(width);
+        LigthsOutCalc game = new LigthsOutCalc(width, counter);
+
         long steps = game.calculateMinSteps();
         System.out.println("Generated grid was:");
         System.out.println(game.toString());
-        System.out.println("Shortest solution: " + steps);
+        String information = (steps == Long.MAX_VALUE) ? "Cannot solve this grid" : "Shortest solution: " + steps;
+        System.out.println(information);
         System.out.println("Examined variations: " + game.getCalculatedVariation());
 
     }
