@@ -15,7 +15,6 @@ public class LightsOutCalcTest {
       LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
       long steps = game.calculateMinSteps();
       assertEquals(8, steps);
-
    }
 
    @Test
@@ -27,7 +26,17 @@ public class LightsOutCalcTest {
       LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
       long steps = game.calculateMinSteps();
       assertEquals(9, steps);
+   }
 
+   @Test
+   public void testWithPreparedDatas3() {
+      boolean[] testData = { true, true, true, false, false, true, false, false, false, false, false, false, false,
+            false, false, false };
+
+      int gridWidth = 4;
+      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
+      long steps = game.calculateMinSteps();
+      assertEquals(1, steps);
    }
 
    @Test

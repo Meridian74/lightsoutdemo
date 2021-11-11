@@ -17,7 +17,7 @@ public class App
         String information = (steps == Long.MAX_VALUE) ? 
                 "Cannot solve this grid" : "Shortest solution: " + steps;
         System.out.println(information);
-        System.out.println("Examined variations: " + game.getMaxStep());
+        System.out.println("Examined variations: " + game.getMaxVariation());
 
     }
 }
