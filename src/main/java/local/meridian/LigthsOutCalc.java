@@ -12,25 +12,20 @@ public class LigthsOutCalc {
    private List<int[]> steps;
    private List<int[]> bestMinSteps;
    private long minSteps;
-
-   // for stepping variations
-   private Counter counter;
-   private int[] firstLineSteps;
+   private long maxVariation;
 
    // for optional informations
-   private LocalTime startTime; 
-   private long calculatedVariation;
+   private LocalTime startTime;
+   
 
-
-   public LigthsOutCalc(boolean[] data, int width, Counter counter) {
+   public LigthsOutCalc(boolean[] data, int width) {
       this.savedGrid = data;
       this.gridWidth = width;
-      this.counter = counter;
       initializing();
    }
 
-   public LigthsOutCalc(int width, Counter counter) {
-      this(randomize(width), width, counter);
+   public LigthsOutCalc(int width) {
+      this(randomize(width), width);
    }
 
    private static boolean[] randomize(int width) {
@@ -41,43 +36,63 @@ public class LigthsOutCalc {
       return data;
    }
 
-   // main calculator
-   public long calculateMinSteps() {
-      calculatedVariation = 0;
-      startTime = LocalTime.now();
-      do {
-         printTemporaryCalculations();
-         runChasingTheLights();
-         if (isSolved() && steps.size() < minSteps)
-            setNewBestShortedSteps();
-         calculatedVariation++;
-
-         steps.clear();
-         stateOfGrid = Arrays.copyOf(savedGrid, savedGrid.length);
-         firstLineSteps = counter.getCounters();
-         if (firstLineSteps[0] < 0) // reach to end of calculations! jump out from the while cycle
-            break; 
-
-         for (int i = 0; i < firstLineSteps.length; i++) { // first steps for trying to solve whole grid
-            toggleCells(firstLineSteps[i]);
-         }
-      } while (true);
-      return minSteps;
-   }
-
-   public long getCalculatedVariation() {
-      return calculatedVariation;
-   }
-
-   public List<int[]> getShortedSteps() {
+   public List<int[]> getBestMinSteps() {
       return bestMinSteps;
    }
 
-   private void printTemporaryCalculations() {
+   public long getMaxVariation() {
+      return maxVariation;
+   }
+
+   // main calculator
+   public long calculateMinSteps() {
+      // init temp data for calc
+      int[] firstLineSteps = new int[gridWidth];
+      startTime = LocalTime.now();
+
+      // check all variations
+      for (int currentStep = 0; currentStep < maxVariation; currentStep++) {
+         // init next calculation
+         steps.clear();
+         stateOfGrid = Arrays.copyOf(savedGrid, savedGrid.length);
+
+         // make first steps before running the Chasing of Lights
+         setFirstLineStepsfromBinary(firstLineSteps, currentStep);
+         for (int i = 0; i < firstLineSteps.length; i++)
+            if (firstLineSteps[i] == 1)
+               toggleCells(i);
+
+         // try to solve the grid
+         runChasingTheLights();
+         if (isSolved() && steps.size() < minSteps)
+            setNewBestShortedSteps();
+
+         // -->> show interim information if the counting takes a long time
+         printTemporaryCalculations(currentStep);
+      }
+      return minSteps;
+   }
+
+   private void setFirstLineStepsfromBinary(int[] firstLineSteps, int currentStep) {
+      long reducer = maxVariation >> 1;
+      for (int i = (gridWidth - 1); i >= 0; i--) {
+         currentStep -= reducer;
+         if (currentStep >= 0) {
+            firstLineSteps[i] = 1;
+         }
+         else {
+            currentStep += reducer;
+            firstLineSteps[i] = 0;
+         }
+         reducer = reducer >> 1;
+      }
+   }
+
+   private void printTemporaryCalculations(long currentStep) {
       // --->>> optional information on variations already calculated
       if (LocalTime.now().minusSeconds(10).isAfter(startTime)) {
          startTime = startTime.plusSeconds(10L);
-         System.out.println("Examined variations: " + calculatedVariation);
+         System.out.println("Examined variations: " + currentStep);
       } // ->>> .............................................. <<<---
    }
 
@@ -86,6 +101,7 @@ public class LigthsOutCalc {
          throw new IllegalArgumentException("Incorrect grid size!");
       }
       this.minSteps = Long.MAX_VALUE;
+      this.maxVariation = (long) Math.pow(2, gridWidth);
       this.steps = new ArrayList<>();
       this.bestMinSteps = new ArrayList<>();
       this.stateOfGrid = Arrays.copyOf(savedGrid, savedGrid.length);

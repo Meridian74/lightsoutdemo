@@ -12,8 +12,7 @@ public class LightsOutCalcTest {
             true, true, true, true, true, true, true, true, true, true, true };
 
       int gridWidth = 5;
-      Counter counter = new Counter(gridWidth);
-      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth, counter);
+      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
       long steps = game.calculateMinSteps();
       assertEquals(8, steps);
 
@@ -25,8 +24,7 @@ public class LightsOutCalcTest {
             true, true, false, false, true, true, false, false, false, true, false, false };
 
       int gridWidth = 5;
-      Counter counter = new Counter(gridWidth);
-      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth, counter);
+      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
       long steps = game.calculateMinSteps();
       assertEquals(9, steps);
 
@@ -36,8 +34,7 @@ public class LightsOutCalcTest {
    public void testWithWrongSizeOfGrid() {
       boolean[] wrongSizeGrid = { false, true, false, true, false };
       int gridWidth = 2;
-      Counter counter = new Counter(gridWidth);
-      assertThrows(IllegalArgumentException.class, () -> new LigthsOutCalc(wrongSizeGrid, gridWidth, counter));
+      assertThrows(IllegalArgumentException.class, () -> new LigthsOutCalc(wrongSizeGrid, gridWidth));
    }
 
    @Test
@@ -46,8 +43,7 @@ public class LightsOutCalcTest {
             false, false, false, true, false, false, false, false, false, false, false, false };
 
       int gridWidth = 5;
-      Counter counter = new Counter(gridWidth);
-      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth, counter);
+      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
       long steps = game.calculateMinSteps();
       assertEquals(1, steps);
    }
@@ -58,8 +54,7 @@ public class LightsOutCalcTest {
             false, false, false, false, false, false, false, false, false, false, false, false };
 
       int gridWidth = 5;
-      Counter counter = new Counter(gridWidth);
-      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth, counter);
+      LigthsOutCalc game = new LigthsOutCalc(testData, gridWidth);
       long steps = game.calculateMinSteps();
       assertEquals(0, steps);
    }
