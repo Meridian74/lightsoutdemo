@@ -79,15 +79,14 @@ public class LigthsOutCalc {
          currentStep -= reducer;
          if (currentStep >= 0) {
             firstLineSteps[i] = 1;
-         }
-         else {
+         } else {
             currentStep += reducer;
             firstLineSteps[i] = 0;
          }
          reducer = reducer >> 1;
       }
    }
-
+   
    private void printTemporaryCalculations(long currentStep) {
       // --->>> optional information on variations already calculated
       if (LocalTime.now().minusSeconds(10).isAfter(startTime)) {

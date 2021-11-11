@@ -2,6 +2,9 @@ package local.meridian;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 public class LightsOutCalcTest {
@@ -67,5 +70,23 @@ public class LightsOutCalcTest {
       long steps = game.calculateMinSteps();
       assertEquals(0, steps);
    }
+
+   @Test
+   @RepeatedTest(10)
+   public void testRandomGrid() {
+      int gridWidth = 4;
+      LigthsOutCalc game = new LigthsOutCalc(gridWidth);
+      long steps = game.calculateMinSteps();
+      long max;
+      if (steps < Long.MAX_VALUE) {
+         max = gridWidth * gridWidth;
+      }
+      else 
+         max = Long.MAX_VALUE;
+
+      assertTrue(steps <= max);
+   }
+
+
 
 }
