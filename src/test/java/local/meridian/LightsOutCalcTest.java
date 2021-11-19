@@ -72,8 +72,8 @@ public class LightsOutCalcTest {
    }
 
    @Test
-   @RepeatedTest(10)
-   public void testRandomGrid() {
+   @RepeatedTest(20)
+   public void testRandomGridAndAlwaysFindSolution() {
       // init gameboard random set of lights
       int gridWidth = (int) (Math.random() * 14 + 2);
       int gridLength = gridWidth * gridWidth;
@@ -86,14 +86,7 @@ public class LightsOutCalcTest {
 
       // test
       long steps = game.calculateMinSteps();
-      long max;
-      if (steps != Long.MAX_VALUE) {
-         max = gridLength;
-      }
-      else 
-         max = Long.MAX_VALUE;
-
-      assertTrue(steps <= max);
+      assertTrue(steps < gridLength);
    }
 
 
