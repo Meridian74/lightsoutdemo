@@ -47,7 +47,7 @@ public class LigthsOutCalc {
    // main calculator
    public long calculateMinSteps() {
       // init temp data for calc
-      int[] firstLineSteps = new int[gridWidth];
+      boolean[] firstLineSteps = new boolean[gridWidth];
       startTime = LocalTime.now();
 
       // check all variations
@@ -59,7 +59,7 @@ public class LigthsOutCalc {
          // make first steps before running the Chasing of Lights
          setFirstLineStepsfromBinary(firstLineSteps, currentStep);
          for (int i = 0; i < firstLineSteps.length; i++)
-            if (firstLineSteps[i] == 1)
+            if (firstLineSteps[i])
                toggleCells(i);
 
          // try to solve the grid
@@ -73,26 +73,26 @@ public class LigthsOutCalc {
       return minSteps;
    }
 
-   private void setFirstLineStepsfromBinary(int[] firstLineSteps, int currentStep) {
+   private void setFirstLineStepsfromBinary(boolean[] firstLineSteps, int currentStep) {
       long reducer = maxVariation >> 1;
       for (int i = (gridWidth - 1); i >= 0; i--) {
          currentStep -= reducer;
          if (currentStep >= 0) {
-            firstLineSteps[i] = 1;
+            firstLineSteps[i] = true; // --> binary: 1
          } else {
             currentStep += reducer;
-            firstLineSteps[i] = 0;
+            firstLineSteps[i] = false; // --> binary: 0
          }
          reducer = reducer >> 1;
       }
    }
    
+   // --->>> optional information on variations already calculated
    private void printTemporaryCalculations(long currentStep) {
-      // --->>> optional information on variations already calculated
       if (LocalTime.now().minusSeconds(10).isAfter(startTime)) {
          startTime = startTime.plusSeconds(10L);
          System.out.println("Examined variations: " + currentStep);
-      } // ->>> .............................................. <<<---
+      }
    }
 
    private void initializing() {
@@ -119,7 +119,7 @@ public class LigthsOutCalc {
       bestMinSteps = List.copyOf(steps);
    }
 
-   private void toggleCells(int cellIndex) {
+   public void toggleCells(int cellIndex) {
       stateOfGrid[cellIndex] = !(stateOfGrid[cellIndex]);
       storeStep(cellIndex);
 

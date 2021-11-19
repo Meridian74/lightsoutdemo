@@ -61,7 +61,7 @@ public class LightsOutCalcTest {
    }
 
    @Test
-   public void shoudZeroStepGrid() {
+   public void shouldZeroStepGrid() {
       boolean[] testData = { false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false };
 
@@ -74,12 +74,21 @@ public class LightsOutCalcTest {
    @Test
    @RepeatedTest(10)
    public void testRandomGrid() {
-      int gridWidth = 4;
-      LigthsOutCalc game = new LigthsOutCalc(gridWidth);
+      // init gameboard random set of lights
+      int gridWidth = (int) (Math.random() * 14 + 2);
+      int gridLength = gridWidth * gridWidth;
+      boolean[] randomizedGrid = new boolean[gridLength];
+      LigthsOutCalc game = new LigthsOutCalc(randomizedGrid, gridWidth);
+      for (int i = 0; i < gridLength; i++) {
+         int pos = (int) Math.random() * gridLength;
+         game.toggleCells(pos);
+      }
+
+      // test
       long steps = game.calculateMinSteps();
       long max;
-      if (steps < Long.MAX_VALUE) {
-         max = gridWidth * gridWidth;
+      if (steps != Long.MAX_VALUE) {
+         max = gridLength;
       }
       else 
          max = Long.MAX_VALUE;

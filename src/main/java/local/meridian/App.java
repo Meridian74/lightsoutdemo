@@ -6,7 +6,7 @@ public class App
     {
         System.out.println("Hello in the Lights Out Game!");
         
-        int width = 5;
+        int width = 6;
         LigthsOutCalc game = new LigthsOutCalc(width);
 
         long steps = game.calculateMinSteps();
